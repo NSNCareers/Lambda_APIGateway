@@ -1,0 +1,162 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Sample SAM Template for Lambda_App
+
+  '
+Globals:
+  Function:
+    Timeout: 10
+    CodeUri: ./src/HelloWorld/
+    Runtime: dotnetcore3.1
+Resources:
+  AddItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::AddItemToCart
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /AddItemToCart
+            Method: post
+      CodeUri: AddItemFunction
+  GetItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::GetItemsFromCart
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /GetItemsFromCart
+            Method: get
+      CodeUri: GetItemFunction
+  UpdateItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::UpdateItemInCart
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /UpdateItemInCart
+            Method: put
+      CodeUri: UpdateItemFunction
+  DeleteItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::DeleteItemInCart
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /DeleteItemInCart
+            Method: delete
+      CodeUri: DeleteItemFunction
+  GetItemWithIDFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::GetItemFromCartWithId
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /GetItemFromCartWithId/{itemName}
+            Method: get
+      CodeUri: GetItemWithIDFunction
+Outputs:
+  AddItemdApi:
+    Description: API Gateway endpoint URL for Prod stage for API function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/AddItemToCart/
+  AddItemFunction:
+    Description: API Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - AddItemFunction
+      - Arn
+  AddItemFunctionIamRole:
+    Description: Implicit IAM Role created for API function
+    Value:
+      Fn::GetAtt:
+      - AddItemFunctionRole
+      - Arn
+  GetItemdApi:
+    Description: API Gateway endpoint URL for Prod stage for API function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/GetItemsFromCart/
+  GetItemFunction:
+    Description: API Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - GetItemFunction
+      - Arn
+  GetItemFunctionIamRole:
+    Description: Implicit IAM Role created for API function
+    Value:
+      Fn::GetAtt:
+      - GetItemFunctionRole
+      - Arn
+  UpdateItemdApi:
+    Description: API Gateway endpoint URL for Prod stage for API function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/UpdateItemInCart/
+  UpdateItemFunction:
+    Description: API Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - UpdateItemFunction
+      - Arn
+  UpdateItemFunctionIamRole:
+    Description: Implicit IAM Role created for API function
+    Value:
+      Fn::GetAtt:
+      - UpdateItemFunctionRole
+      - Arn
+  DeleteItemApi:
+    Description: API Gateway endpoint URL for Prod stage for API function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/DeleteItemInCart/
+  DeleteItemFunction:
+    Description: API Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - DeleteItemFunction
+      - Arn
+  DeleteItemFunctionIamRole:
+    Description: Implicit IAM Role created for API function
+    Value:
+      Fn::GetAtt:
+      - DeleteItemFunctionRole
+      - Arn
+  GetItemIdApi:
+    Description: API Gateway endpoint URL for Prod stage for API function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/GetItemFromCartWithId/{itemName}
+  GetItemIdFunction:
+    Description: API Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - GetItemIdFunction
+      - Arn
+  GetItemIdFunctionIamRole:
+    Description: Implicit IAM Role created for API function
+    Value:
+      Fn::GetAtt:
+      - GetItemIdFunctionRole
+      - Arn

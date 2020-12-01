@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Sample SAM Template for Lambda_App
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+    CodeUri: ./src/HelloWorld/
+    Runtime: dotnetcore3.1
+
+Resources:
+  AddItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::AddItemToCart
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /AddItemToCart
+            Method: post
+
+  GetItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::GetItemsFromCart
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /GetItemsFromCart
+            Method: get
+
+  UpdateItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::UpdateItemInCart
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /UpdateItemInCart
+            Method: put
+
+  DeleteItemFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::DeleteItemInCart
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /DeleteItemInCart
+            Method: delete
+
+  GetItemWithIDFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Handler: HelloWorld::HelloWorld.Function::GetItemFromCartWithId
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /GetItemFromCartWithId/{itemName}
+            Method: get
+  
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  AddItemdApi:
+    Description: "API Gateway endpoint URL for Prod stage for API function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/AddItemToCart/"
+  AddItemFunction:
+    Description: "API Lambda Function ARN"
+    Value: !GetAtt AddItemFunction.Arn
+  AddItemFunctionIamRole:
+    Description: "Implicit IAM Role created for API function"
+    Value: !GetAtt AddItemFunctionRole.Arn
+
+  
+  GetItemdApi:
+    Description: "API Gateway endpoint URL for Prod stage for API function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/GetItemsFromCart/"
+  GetItemFunction:
+    Description: "API Lambda Function ARN"
+    Value: !GetAtt GetItemFunction.Arn
+  GetItemFunctionIamRole:
+    Description: "Implicit IAM Role created for API function"
+    Value: !GetAtt GetItemFunctionRole.Arn
+
+  UpdateItemdApi:
+    Description: "API Gateway endpoint URL for Prod stage for API function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/UpdateItemInCart/"
+  UpdateItemFunction:
+    Description: "API Lambda Function ARN"
+    Value: !GetAtt UpdateItemFunction.Arn
+  UpdateItemFunctionIamRole:
+    Description: "Implicit IAM Role created for API function"
+    Value: !GetAtt UpdateItemFunctionRole.Arn
+
+
+  DeleteItemApi:
+    Description: "API Gateway endpoint URL for Prod stage for API function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/DeleteItemInCart/"
+  DeleteItemFunction:
+    Description: "API Lambda Function ARN"
+    Value: !GetAtt DeleteItemFunction.Arn
+  DeleteItemFunctionIamRole:
+    Description: "Implicit IAM Role created for API function"
+    Value: !GetAtt DeleteItemFunctionRole.Arn
+
+  GetItemIdApi:
+    Description: "API Gateway endpoint URL for Prod stage for API function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/GetItemFromCartWithId/{itemName}"
+  GetItemIdFunction:
+    Description: "API Lambda Function ARN"
+    Value: !GetAtt GetItemIdFunction.Arn
+  GetItemIdFunctionIamRole:
+    Description: "Implicit IAM Role created for API function"
+    Value: !GetAtt GetItemIdFunctionRole.Arn

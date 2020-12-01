@@ -1,0 +1,68 @@
+{
+   // Use IntelliSense to find out which attributes exist for C# debugging
+   // Use hover for the description of the existing attributes
+   // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+   "version": "0.2.0",
+   "configurations": [
+    {
+        "type": "aws-sam",
+        "request": "direct-invoke",
+        "name": "test:HelloWorld.Tests::HelloWorld.Tests.FunctionTest::UpdateItemTest (dotnetcore3.1)",
+        "invokeTarget": {
+            "target": "code",
+            "projectRoot": "test/HelloWorld.Test",
+            "lambdaHandler": "HelloWorld.Tests::HelloWorld.Tests.FunctionTest::UpdateItemTest"
+        },
+        "lambda": {
+            "runtime": "dotnetcore3.1",
+            "payload": {},
+            "environmentVariables": {}
+        }
+    },
+    {
+        "type": "aws-sam",
+        "request": "direct-invoke",
+        "name": "test:HelloWorld.Tests::HelloWorld.Tests.FunctionTest::DeleteItemTest (dotnetcore3.1)",
+        "invokeTarget": {
+            "target": "code",
+            "projectRoot": "test/HelloWorld.Test",
+            "lambdaHandler": "HelloWorld.Tests::HelloWorld.Tests.FunctionTest::DeleteItemTest"
+        },
+        "lambda": {
+            "runtime": "dotnetcore3.1",
+            "payload": {},
+            "environmentVariables": {}
+        }
+    },
+    {
+        "type": "aws-sam",
+        "request": "direct-invoke",
+        "name": "test:HelloWorld.Tests::HelloWorld.Tests.FunctionTest::GetItemTest (dotnetcore3.1)",
+        "invokeTarget": {
+            "target": "code",
+            "projectRoot": "test/HelloWorld.Test",
+            "lambdaHandler": "HelloWorld.Tests::HelloWorld.Tests.FunctionTest::GetItemTest"
+        },
+        "lambda": {
+            "runtime": "dotnetcore3.1",
+            "payload": {},
+            "environmentVariables": {}
+        }
+    },
+    {
+        "type": "aws-sam",
+        "request": "direct-invoke",
+        "name": "test:HelloWorld.Tests::HelloWorld.Tests.FunctionTest::AddItemTest (dotnetcore3.1)",
+        "invokeTarget": {
+            "target": "code",
+            "projectRoot": "test/HelloWorld.Test",
+            "lambdaHandler": "HelloWorld.Tests::HelloWorld.Tests.FunctionTest::AddItemTest"
+        },
+        "lambda": {
+            "runtime": "dotnetcore3.1",
+            "payload": {},
+            "environmentVariables": {}
+        }
+    }
+]
+}
