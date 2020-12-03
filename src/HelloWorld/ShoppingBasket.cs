@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace src.HelloWorld
 {
@@ -9,20 +10,27 @@ namespace src.HelloWorld
     {
         private static Dictionary<string,int> shoppingCat = new Dictionary<string, int>();
 
-        public bool PutItemInBasket(Basket basket)
+        private static dbContextHandler db = new dbContextHandler();
+
+        public async Task<bool> PutItemInBasket(Basket basket)
         {
+            var dbContext = db.ConfigureDB();
             if (basket is null)
             {
                 throw new ArgumentNullException(nameof(basket));
             }
-            else if (shoppingCat.ContainsKey(basket.itemName))
+            else if (await dbContext.FindAsync<Basket>(basket.itemName)!=null)
             {
                 return false;
             }else
             {
                 try
                 {
-                    shoppingCat.Add(basket.itemName,basket.itemQuantity);
+                    //shoppingCat.Add(basket.itemName,basket.itemQuantity);
+                    var set = dbContext.Set<Basket>();
+                    set.Add(basket);
+                    await dbContext.SaveChangesAsync();
+
                 }
                 catch (Exception ex)
                 {
@@ -32,11 +40,14 @@ namespace src.HelloWorld
             return true;
         }
 
-        public Dictionary<string,int> GetItemsInBasket()
+        public IAsyncEnumerable<Basket> GetItemsInBasket()
         {
+            var dbContext = db.ConfigureDB();
             try
             {
-                return shoppingCat;
+                
+                var results = dbContext.Basket.AsAsyncEnumerable();
+                return results;
             }
             catch (Exception ex)
             { 
@@ -44,8 +55,10 @@ namespace src.HelloWorld
             }
         }
 
-         public int GetItemFromBasketID(Basket basket)
+         public async Task<Basket> GetItemFromBasketID(Basket basket)
         {
+            var dbContext = db.ConfigureDB();
+
             if (basket is null)
             {
                 throw new ArgumentNullException(nameof(basket));
@@ -53,7 +66,9 @@ namespace src.HelloWorld
             {
                  try
             {
-                shoppingCat.TryGetValue(basket.itemName,out int Quantity);
+                //shoppingCat.TryGetValue(basket.itemName,out int Quantity);
+                var set = dbContext.Set<Basket>();
+                var Quantity = await set.FindAsync(basket.itemName);
                 return Quantity;
             }
             catch (Exception ex)
@@ -63,8 +78,9 @@ namespace src.HelloWorld
             }
         }
 
-        public bool UpdateBasket(Basket basket)
+        public async Task<bool> UpdateBasket(Basket basket)
         {
+            var dbContext = db.ConfigureDB();
             if (basket is null)
             {
                 throw new ArgumentNullException(nameof(basket));
@@ -72,7 +88,11 @@ namespace src.HelloWorld
             {
                  try
             {
-                shoppingCat[basket.itemName]=basket.itemQuantity;
+                //shoppingCat[basket.itemName]=basket.itemQuantity;
+                var set = dbContext.Set<Basket>();
+                set.Update(basket);
+                await dbContext.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception ex)
@@ -82,8 +102,10 @@ namespace src.HelloWorld
             }
         }
 
-        public bool RemoveItemFromBasket(Basket basket)
+        public async Task<bool> RemoveItemFromBasket(Basket basket)
         {
+            var dbContext = db.ConfigureDB();
+            
             if (basket is null)
             {
                 throw new ArgumentNullException(nameof(basket));
@@ -92,6 +114,7 @@ namespace src.HelloWorld
                  try
             {
                 shoppingCat.Remove(basket.itemName);
+                await dbContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)

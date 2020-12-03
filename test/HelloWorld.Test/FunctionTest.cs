@@ -1,20 +1,16 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Net.Http;
-using Newtonsoft.Json;
 using Xunit;
 using Amazon.Lambda.TestUtilities;
 using Amazon.Lambda.APIGatewayEvents;
 
 namespace HelloWorld.Tests
 {
-  public class FunctionTest
+    public class FunctionTest
   {
 
     [Fact]
-    public void AddItemTest()
+    public async  Task AddItemTest()
     {
             var jsonString = @"
             {
@@ -38,7 +34,7 @@ namespace HelloWorld.Tests
             };
 
             var function = new Function();
-            var response = function.AddItemToCart(request, context);
+            var response = await function.AddItemToCart(request, context);
 
             Assert.Equal(expectedResponse.StatusCode, response.StatusCode);
             Assert.Equal(expectedResponse.Body, response.Body);
@@ -47,26 +43,25 @@ namespace HelloWorld.Tests
     [Fact]
     public void GetItemTest()
     {
-            var count = 1;
 
             var request = new APIGatewayProxyRequest();
             var context = new TestLambdaContext();
 
-            var expectedResponse = new APIGatewayProxyResponse
-            {
-              StatusCode = 200,
-              Body = $"Successfully retrieved {count} items from Cat"
-            };
-
             var function = new Function();
             var response = function.GetItemsFromCart(request, context);
+
+             var expectedResponse = new APIGatewayProxyResponse
+            {
+              StatusCode = 200,
+              Body = $"Successfully retrieved items{response} from Cat"
+            };
 
             Assert.Equal(expectedResponse.StatusCode, response.StatusCode);
             Assert.Equal(expectedResponse.Body, response.Body);
     }
 
     [Fact]
-    public void DeleteItemTest()
+    public async  Task DeleteItemTest()
     {
            var jsonString = @"
             {
@@ -90,14 +85,14 @@ namespace HelloWorld.Tests
             };
 
             var function = new Function();
-            var response = function.DeleteItemInCart(request, context);
+            var response = await function.DeleteItemInCart(request, context);
 
             Assert.Equal(expectedResponse.StatusCode, response.StatusCode);
             Assert.Equal(expectedResponse, response);
     }
 
     [Fact]
-    public void UpdateItemTest()
+    public async  Task UpdateItemTest()
     {
            var jsonString = @"
             {
@@ -121,14 +116,14 @@ namespace HelloWorld.Tests
             };
 
             var function = new Function();
-            var response = function.UpdateItemInCart(request, context);
+            var response = await function.UpdateItemInCart(request, context);
 
             Assert.Equal(expectedResponse.StatusCode, response.StatusCode);
             Assert.Equal(expectedResponse, response);
     }
 
     [Fact]
-    public void GetItemWithIdTest()
+    public async  Task GetItemWithIdTest()
     {
            var dictionary = new Dictionary<string,string>
            {
@@ -150,7 +145,7 @@ namespace HelloWorld.Tests
             };
 
             var function = new Function();
-            var response = function.GetItemFromCartWithId(request, context);
+            var response = await function.GetItemFromCartWithId(request, context);
 
             Assert.Equal(expectedResponse.StatusCode, response.StatusCode);
             Assert.Equal(expectedResponse, response);

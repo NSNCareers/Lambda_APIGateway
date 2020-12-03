@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
 using src.HelloWorld;
+using System.Threading.Tasks;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -13,11 +14,11 @@ namespace HelloWorld
     {
         private ShoppingBasket shop = new ShoppingBasket();
 
-        public APIGatewayProxyResponse AddItemToCart(APIGatewayProxyRequest request, ILambdaContext context)
+        public async  Task<APIGatewayProxyResponse> AddItemToCart(APIGatewayProxyRequest request, ILambdaContext context)
         {
             
             var requestBody = JsonConvert.DeserializeObject<Basket>(request.Body);  
-            var results = shop.PutItemInBasket(requestBody);
+            var results = await shop.PutItemInBasket(requestBody);
             APIGatewayProxyResponse result;
 
             if (!results)
@@ -34,8 +35,7 @@ namespace HelloWorld
                 result = new APIGatewayProxyResponse
                 {
                     StatusCode = 200,
-                    Body = $"Successfully added item: {requestBody.itemName}",
-                    Headers = {{"Content-Type","application/json"}}
+                    Body = $"Successfully added item: {requestBody.itemName}"
                 }; 
             }
 
@@ -46,9 +46,8 @@ namespace HelloWorld
         {
             var results = shop.GetItemsInBasket();
             APIGatewayProxyResponse result;
-            var count = results.Count;
 
-            if (count==0)
+            if (results==null)
             {
                 result = new APIGatewayProxyResponse
                 {
@@ -61,18 +60,18 @@ namespace HelloWorld
                 result = new APIGatewayProxyResponse
                 {
                     StatusCode = 200,
-                    Body = $"Successfully retrieved {count} items from Cat"
+                    Body = $"Successfully retrieved items{results}"
                 }; 
             }
 
             return result;
         }
 
-        public APIGatewayProxyResponse UpdateItemInCart(APIGatewayProxyRequest request, ILambdaContext context)
+        public async  Task<APIGatewayProxyResponse> UpdateItemInCart(APIGatewayProxyRequest request, ILambdaContext context)
         {
             
             var requestBody = JsonConvert.DeserializeObject<Basket>(request.Body);  
-            var results = shop.UpdateBasket(requestBody);
+            var results = await shop.UpdateBasket(requestBody);
             APIGatewayProxyResponse result;
 
             if (!results)
@@ -95,11 +94,11 @@ namespace HelloWorld
             return result;
         }
 
-         public APIGatewayProxyResponse DeleteItemInCart(APIGatewayProxyRequest request, ILambdaContext context)
+         public async  Task<APIGatewayProxyResponse> DeleteItemInCart(APIGatewayProxyRequest request, ILambdaContext context)
         {
             
             var requestBody = JsonConvert.DeserializeObject<Basket>(request.Body);  
-            var results = shop.RemoveItemFromBasket(requestBody);
+            var results = await shop.RemoveItemFromBasket(requestBody);
             APIGatewayProxyResponse result;
 
             if (!results)
@@ -122,11 +121,11 @@ namespace HelloWorld
             return result;
         }
 
-         public APIGatewayProxyResponse GetItemFromCartWithId(APIGatewayProxyRequest request, ILambdaContext context)
+         public async  Task<APIGatewayProxyResponse> GetItemFromCartWithId(APIGatewayProxyRequest request, ILambdaContext context)
         {
             
             var requestBody = JsonConvert.DeserializeObject<Basket>(request.PathParameters["itemName"]);  
-            var results = shop.RemoveItemFromBasket(requestBody);
+            var results = await shop.RemoveItemFromBasket(requestBody);
             APIGatewayProxyResponse result;
 
             if (!results)

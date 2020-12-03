@@ -3,13 +3,19 @@ sam init --runtime dotnetcore3.1 --name Lambda_App
 (2) Build repository
 dotnet restore src/HelloWorld/HelloWorld.csproj
 dotnet build src/HelloWorld/HelloWorld.csproj
-dotnet publish -c Release -r win-x64 --output ./buildOutput src/HelloWorld/HelloWorld.csproj
+dotnet publish -c Release -r win-x64 --output ./src/HelloWorld/buildOutput src/HelloWorld/HelloWorld.csproj
+
 (3) Start server locally
 sam local start-api -t template.yaml
 (4) Start server locally with json file creating the event 
  sam local invoke AddItemFunction --event addItem.json
 
 ./src/HelloWorld/  {proxy+}
+
+
+Adding EF Core 
+* dotnet add src/HelloWorld/HelloWorld.csproj  package Microsoft.EntityFrameworkCore.InMemory
+
 
 
 Sam Commands
