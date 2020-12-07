@@ -13,58 +13,49 @@ namespace HelloWorld
     public class Function
     {
         private ShoppingBasket shop = new ShoppingBasket();
+        private APIGatewayProxyResponse response;
 
         public async  Task<APIGatewayProxyResponse> AddItemToCart(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            
             var requestBody = JsonConvert.DeserializeObject<Basket>(request.Body);  
             var results = await shop.PutItemInBasket(requestBody);
-            APIGatewayProxyResponse result;
-
-            if (!results)
+            if (results.HttpStatusCode.ToString() != "200")
             {
-                result = new APIGatewayProxyResponse
+                response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
-                    Body = $"{requestBody.itemName} already exist in shopping cart",
-                    Headers = {{"Content-Type","application/json"}}
+                    StatusCode = (int)results.HttpStatusCode,
+                    Body = $"Request was not successfull"
                 };
-            }
-            else
+            return response;
+            }else
             {
-                result = new APIGatewayProxyResponse
+                 response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
+                    StatusCode = (int)results.HttpStatusCode,
                     Body = $"Successfully added item: {requestBody.itemName}"
-                }; 
+                };
+            return response;
             }
-
-            return result;
         }
 
          public APIGatewayProxyResponse GetItemsFromCart(APIGatewayProxyRequest request, ILambdaContext context)
         {
             var results = shop.GetItemsInBasket();
-            APIGatewayProxyResponse result;
-
-            if (results==null)
+            if (!results.IsCompletedSuccessfully)
             {
-                result = new APIGatewayProxyResponse
+                response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
-                    Body = $"No Items exist in shopping cart"
+                    Body = $"Request was not successfull"
                 };
-            }
-            else
+            return response;
+            }else
             {
-                result = new APIGatewayProxyResponse
+                 response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
-                    Body = $"Successfully retrieved items{results}"
-                }; 
+                    Body = $"Successfully retrived items: {results}"
+                };
+            return response;
             }
-
-            return result;
         }
 
         public async  Task<APIGatewayProxyResponse> UpdateItemInCart(APIGatewayProxyRequest request, ILambdaContext context)
@@ -72,26 +63,23 @@ namespace HelloWorld
             
             var requestBody = JsonConvert.DeserializeObject<Basket>(request.Body);  
             var results = await shop.UpdateBasket(requestBody);
-            APIGatewayProxyResponse result;
-
-            if (!results)
+            if (results.HttpStatusCode.ToString() != "200")
             {
-                result = new APIGatewayProxyResponse
+                response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
-                    Body = $"{requestBody.itemName} does not exist in shopping cart"
+                    StatusCode = (int)results.HttpStatusCode,
+                    Body = $"Request was not successfull"
                 };
-            }
-            else
+            return response;
+            }else
             {
-                result = new APIGatewayProxyResponse
+                 response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
+                    StatusCode = (int)results.HttpStatusCode,
                     Body = $"Successfully updated item: {requestBody.itemName}"
-                }; 
+                };
+            return response;
             }
-
-            return result;
         }
 
          public async  Task<APIGatewayProxyResponse> DeleteItemInCart(APIGatewayProxyRequest request, ILambdaContext context)
@@ -99,53 +87,47 @@ namespace HelloWorld
             
             var requestBody = JsonConvert.DeserializeObject<Basket>(request.Body);  
             var results = await shop.RemoveItemFromBasket(requestBody);
-            APIGatewayProxyResponse result;
-
-            if (!results)
+            if (results.HttpStatusCode.ToString() != "200")
             {
-                result = new APIGatewayProxyResponse
+                response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
-                    Body = $"{requestBody.itemName} does not exist in shopping cart"
+                    StatusCode = (int)results.HttpStatusCode,
+                    Body = $"Request was not successfull"
                 };
-            }
-            else
+            return response;
+            }else
             {
-                result = new APIGatewayProxyResponse
+                 response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
+                    StatusCode = (int)results.HttpStatusCode,
                     Body = $"Successfully deleted item: {requestBody.itemName}"
-                }; 
+                };
+            return response;
             }
-
-            return result;
         }
 
          public async  Task<APIGatewayProxyResponse> GetItemFromCartWithId(APIGatewayProxyRequest request, ILambdaContext context)
         {
             
             var requestBody = JsonConvert.DeserializeObject<Basket>(request.PathParameters["itemName"]);  
-            var results = await shop.RemoveItemFromBasket(requestBody);
-            APIGatewayProxyResponse result;
-
-            if (!results)
+            var results = await shop.GetItemFromBasketID(requestBody);
+            if (results.HttpStatusCode.ToString() != "200")
             {
-                result = new APIGatewayProxyResponse
+                response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
-                    Body = $"{requestBody.itemName} does not exist in shopping cart"
+                    StatusCode = (int)results.HttpStatusCode,
+                    Body = $"Request was not successfull"
                 };
-            }
-            else
+            return response;
+            }else
             {
-                result = new APIGatewayProxyResponse
+                 response = new APIGatewayProxyResponse
                 {
-                    StatusCode = 200,
-                    Body = $"Successfully deleted item: {requestBody.itemName}"
-                }; 
+                    StatusCode = (int)results.HttpStatusCode,
+                    Body = $"Successfully retyrieved item: {results}"
+                };
+            return response;
             }
-
-            return result;
         }
     }
 }

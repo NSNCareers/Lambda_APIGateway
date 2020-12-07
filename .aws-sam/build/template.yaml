@@ -15,9 +15,16 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::AddItemToCart
       Environment:
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME:
+            Ref: dynamodbTable
+          REGION_NAME:
+            Ref: AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: dynamodbTable
       Events:
-        HelloWorld:
+        ItemPost:
           Type: Api
           Properties:
             Path: /AddItemToCart
@@ -29,9 +36,16 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::GetItemsFromCart
       Environment:
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME:
+            Ref: dynamodbTable
+          REGION_NAME:
+            Ref: AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: dynamodbTable
       Events:
-        HelloWorld:
+        ItemGet:
           Type: Api
           Properties:
             Path: /GetItemsFromCart
@@ -43,9 +57,16 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::UpdateItemInCart
       Environment:
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME:
+            Ref: dynamodbTable
+          REGION_NAME:
+            Ref: AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: dynamodbTable
       Events:
-        HelloWorld:
+        ItemPut:
           Type: Api
           Properties:
             Path: /UpdateItemInCart
@@ -57,9 +78,16 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::DeleteItemInCart
       Environment:
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME:
+            Ref: dynamodbTable
+          REGION_NAME:
+            Ref: AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: dynamodbTable
       Events:
-        HelloWorld:
+        ItemDelete:
           Type: Api
           Properties:
             Path: /DeleteItemInCart
@@ -71,14 +99,34 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::GetItemFromCartWithId
       Environment:
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME:
+            Ref: dynamodbTable
+          REGION_NAME:
+            Ref: AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: dynamodbTable
       Events:
-        HelloWorld:
+        ItemIDGet:
           Type: Api
           Properties:
             Path: /GetItemFromCartWithId/{itemName}
             Method: get
       CodeUri: GetItemWithIDFunction
+  dynamodbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: itemName
+        AttributeType: S
+      KeySchema:
+      - AttributeName: itemName
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      TableName: cartTable
 Outputs:
   AddItemdApi:
     Description: API Gateway endpoint URL for Prod stage for API function
@@ -148,15 +196,15 @@ Outputs:
     Description: API Gateway endpoint URL for Prod stage for API function
     Value:
       Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/GetItemFromCartWithId/{itemName}
-  GetItemIdFunction:
+  GetItemWithIDFunction:
     Description: API Lambda Function ARN
     Value:
       Fn::GetAtt:
-      - GetItemIdFunction
+      - GetItemWithIDFunction
       - Arn
   GetItemIdFunctionIamRole:
     Description: Implicit IAM Role created for API function
     Value:
       Fn::GetAtt:
-      - GetItemIdFunctionRole
+      - GetItemWithIDFunctionRole
       - Arn

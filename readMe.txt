@@ -15,11 +15,15 @@ sam local start-api -t template.yaml
 
 Adding EF Core 
 * dotnet add src/HelloWorld/HelloWorld.csproj  package Microsoft.EntityFrameworkCore.InMemory
+dotnet add src/HelloWorld/HelloWorld.csproj  package AWSSDK.Extensions.NetCore.Setup
+dotnet add src/HelloWorld/HelloWorld.csproj  package AWSSDK.DynamoDBv2
 
 
 
 Sam Commands
+To package => sam package
 To build => sam build
 To Invoke Function: sam local invoke
 To Deploy: sam deploy --guided
 aws cloudformation delete-stack --stack-name MY-NEW-STACK
+sam local generate-event apigateway aws-proxy | pbcopy

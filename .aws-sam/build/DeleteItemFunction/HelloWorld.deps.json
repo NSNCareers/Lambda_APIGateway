@@ -9,6 +9,8 @@
     ".NETCoreApp,Version=v3.1/linux-x64": {
       "HelloWorld/1.0.0": {
         "dependencies": {
+          "AWSSDK.DynamoDBv2": "3.5.4.5",
+          "AWSSDK.Extensions.NETCore.Setup": "3.3.101",
           "Amazon.Lambda.APIGatewayEvents": "1.2.0",
           "Amazon.Lambda.Core": "1.1.0",
           "Amazon.Lambda.Serialization.Json": "1.5.0",
@@ -47,6 +49,39 @@
           "lib/netstandard2.0/Amazon.Lambda.Serialization.Json.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.2.0.0"
+          }
+        }
+      },
+      "AWSSDK.Core/3.5.1.46": {
+        "runtime": {
+          "lib/netcoreapp3.1/AWSSDK.Core.dll": {
+            "assemblyVersion": "3.3.0.0",
+            "fileVersion": "3.5.1.46"
+          }
+        }
+      },
+      "AWSSDK.DynamoDBv2/3.5.4.5": {
+        "dependencies": {
+          "AWSSDK.Core": "3.5.1.46"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/AWSSDK.DynamoDBv2.dll": {
+            "assemblyVersion": "3.3.0.0",
+            "fileVersion": "3.5.4.5"
+          }
+        }
+      },
+      "AWSSDK.Extensions.NETCore.Setup/3.3.101": {
+        "dependencies": {
+          "AWSSDK.Core": "3.5.1.46",
+          "Microsoft.Extensions.Configuration.Abstractions": "2.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AWSSDK.Extensions.NETCore.Setup.dll": {
+            "assemblyVersion": "3.3.0.0",
+            "fileVersion": "3.3.100.0"
           }
         }
       },
@@ -111,6 +146,17 @@
           "lib/netstandard2.0/Microsoft.Extensions.Caching.Memory.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.20.51904"
+          }
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "5.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.17205"
           }
         }
       },
@@ -237,6 +283,27 @@
       "path": "amazon.lambda.serialization.json/1.5.0",
       "hashPath": "amazon.lambda.serialization.json.1.5.0.nupkg.sha512"
     },
+    "AWSSDK.Core/3.5.1.46": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZhN0fdozKvURNVWyt9O2jNplD9lTo0xcysRKjXbBrdfqk0t9osTvKp5BEdgAbReSnpK+7HaQPnE4rEBbEFt5ig==",
+      "path": "awssdk.core/3.5.1.46",
+      "hashPath": "awssdk.core.3.5.1.46.nupkg.sha512"
+    },
+    "AWSSDK.DynamoDBv2/3.5.4.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ja4qVhHPpnM+856xKX6CWpKuCvv4aNEt5DONTO7PtFkrFIdHVFLK8OonqWRBtsXB/B1C0CLjkXGGZOs9Uqsw7A==",
+      "path": "awssdk.dynamodbv2/3.5.4.5",
+      "hashPath": "awssdk.dynamodbv2.3.5.4.5.nupkg.sha512"
+    },
+    "AWSSDK.Extensions.NETCore.Setup/3.3.101": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mbFGOX62zG4A/0bIhKy+I3NmNBAwSCKClFl+Y6RzuRj+0cQDBbmH33JMe8x3SWizhoyl+ATm2ldOR1phIFTGvA==",
+      "path": "awssdk.extensions.netcore.setup/3.3.101",
+      "hashPath": "awssdk.extensions.netcore.setup.3.3.101.nupkg.sha512"
+    },
     "Microsoft.EntityFrameworkCore/5.0.0": {
       "type": "package",
       "serviceable": true,
@@ -278,6 +345,13 @@
       "sha512": "sha512-/1qPCleFOkJe0O+xmFqCNLFYQZTJz965sVw8CUB/BQgsApBwzAUsL2BUkDvQW+geRUVTXUS9zLa0pBjC2VJ1gA==",
       "path": "microsoft.extensions.caching.memory/5.0.0",
       "hashPath": "microsoft.extensions.caching.memory.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Abstractions/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rHFrXqMIvQNq51H8RYTO4IWmDOYh8NUzyqGlh0xHWTP6XYnKk7Ryinys2uDs+Vu88b3AMlM3gBBSs78m6OQpYQ==",
+      "path": "microsoft.extensions.configuration.abstractions/2.0.0",
+      "hashPath": "microsoft.extensions.configuration.abstractions.2.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.DependencyInjection/5.0.0": {
       "type": "package",

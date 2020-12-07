@@ -17,9 +17,13 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::AddItemToCart
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME: !Ref dynamodbTable
+          REGION_NAME: !Ref AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref dynamodbTable
       Events:
-        HelloWorld:
+        ItemPost:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /AddItemToCart
@@ -31,9 +35,13 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::GetItemsFromCart
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME: !Ref dynamodbTable
+          REGION_NAME: !Ref AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref dynamodbTable
       Events:
-        HelloWorld:
+        ItemGet:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /GetItemsFromCart
@@ -45,9 +53,13 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::UpdateItemInCart
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME: !Ref dynamodbTable
+          REGION_NAME: !Ref AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref dynamodbTable
       Events:
-        HelloWorld:
+        ItemPut:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /UpdateItemInCart
@@ -59,9 +71,13 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::DeleteItemInCart
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME: !Ref dynamodbTable
+          REGION_NAME: !Ref AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref dynamodbTable
       Events:
-        HelloWorld:
+        ItemDelete:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /DeleteItemInCart
@@ -73,13 +89,33 @@ Resources:
       Handler: HelloWorld::HelloWorld.Function::GetItemFromCartWithId
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          PARAM1: VALUE
+          TABLE_NAME: !Ref dynamodbTable
+          REGION_NAME: !Ref AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref dynamodbTable
       Events:
-        HelloWorld:
+        ItemIDGet:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /GetItemFromCartWithId/{itemName}
             Method: get
+
+  dynamodbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions: 
+        - 
+          AttributeName: "itemName"
+          AttributeType: "S"
+      KeySchema:
+        - 
+          AttributeName: "itemName"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1 
+        WriteCapacityUnits: 1
+      TableName: cartTable
   
 
 Outputs:
@@ -131,9 +167,9 @@ Outputs:
   GetItemIdApi:
     Description: "API Gateway endpoint URL for Prod stage for API function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/GetItemFromCartWithId/{itemName}"
-  GetItemIdFunction:
+  GetItemWithIDFunction:
     Description: "API Lambda Function ARN"
-    Value: !GetAtt GetItemIdFunction.Arn
+    Value: !GetAtt GetItemWithIDFunction.Arn
   GetItemIdFunctionIamRole:
     Description: "Implicit IAM Role created for API function"
-    Value: !GetAtt GetItemIdFunctionRole.Arn
+    Value: !GetAtt GetItemWithIDFunctionRole.Arn

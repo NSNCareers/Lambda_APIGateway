@@ -2,34 +2,46 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Amazon.DynamoDBv2.Model;
 
 namespace src.HelloWorld
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class ShoppingBasket
     {
-        private static Dictionary<string,int> shoppingCat = new Dictionary<string, int>();
+        private string dynamoDBTable = Environment.GetEnvironmentVariable("TABLE_NAME");
+        private dbContextHandler _dbContextHandler = new dbContextHandler();
+       
 
-        private static dbContextHandler db = new dbContextHandler();
-
-        public async Task<bool> PutItemInBasket(Basket basket)
+        public async Task<PutItemResponse> PutItemInBasket(Basket basket)
         {
-            var dbContext = db.ConfigureDB();
+            var client = _dbContextHandler.ConfigureDynamoDB();
+            var request = new PutItemRequest
+            {
+                TableName = dynamoDBTable,
+                Item = new Dictionary<string, AttributeValue>
+                {
+                    {
+                        basket.itemName,
+                        new AttributeValue
+                        {
+                            S = basket.itemQuantity
+                        }
+                    }
+                }
+            };
+
             if (basket is null)
             {
                 throw new ArgumentNullException(nameof(basket));
             }
-            else if (await dbContext.FindAsync<Basket>(basket.itemName)!=null)
-            {
-                return false;
-            }else
+            else
             {
                 try
                 {
                     //shoppingCat.Add(basket.itemName,basket.itemQuantity);
-                    var set = dbContext.Set<Basket>();
-                    set.Add(basket);
-                    await dbContext.SaveChangesAsync();
+                    var response = await client.PutItemAsync(request);
+                    return response;
 
                 }
                 catch (Exception ex)
@@ -37,16 +49,19 @@ namespace src.HelloWorld
                     throw new Exception(ex.Message);
                 }
             }
-            return true;
         }
 
-        public IAsyncEnumerable<Basket> GetItemsInBasket()
+        public async Task<ScanResponse> GetItemsInBasket()
         {
-            var dbContext = db.ConfigureDB();
+            var client = _dbContextHandler.ConfigureDynamoDB();
+            var request = new ScanRequest
+            {
+                TableName = dynamoDBTable
+            };
             try
             {
                 
-                var results = dbContext.Basket.AsAsyncEnumerable();
+                var results = await client.ScanAsync(request);
                 return results;
             }
             catch (Exception ex)
@@ -55,9 +70,23 @@ namespace src.HelloWorld
             }
         }
 
-         public async Task<Basket> GetItemFromBasketID(Basket basket)
+         public async Task<GetItemResponse> GetItemFromBasketID(Basket basket)
         {
-            var dbContext = db.ConfigureDB();
+            var client = _dbContextHandler.ConfigureDynamoDB();
+            var request = new GetItemRequest
+            {
+                TableName = dynamoDBTable,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {
+                        basket.itemName,
+                        new AttributeValue
+                        {
+                            S = basket.itemQuantity
+                        }
+                    }
+                }
+            };
 
             if (basket is null)
             {
@@ -67,9 +96,8 @@ namespace src.HelloWorld
                  try
             {
                 //shoppingCat.TryGetValue(basket.itemName,out int Quantity);
-                var set = dbContext.Set<Basket>();
-                var Quantity = await set.FindAsync(basket.itemName);
-                return Quantity;
+                var response = await client.GetItemAsync(request);
+                return response;
             }
             catch (Exception ex)
             { 
@@ -78,9 +106,23 @@ namespace src.HelloWorld
             }
         }
 
-        public async Task<bool> UpdateBasket(Basket basket)
+        public async Task<UpdateItemResponse> UpdateBasket(Basket basket)
         {
-            var dbContext = db.ConfigureDB();
+            var client = _dbContextHandler.ConfigureDynamoDB();
+            var request = new UpdateItemRequest
+            {
+                TableName = dynamoDBTable,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {
+                        basket.itemName,
+                        new AttributeValue
+                        {
+                            S = basket.itemQuantity
+                        }
+                    }
+                }
+            };
             if (basket is null)
             {
                 throw new ArgumentNullException(nameof(basket));
@@ -89,11 +131,9 @@ namespace src.HelloWorld
                  try
             {
                 //shoppingCat[basket.itemName]=basket.itemQuantity;
-                var set = dbContext.Set<Basket>();
-                set.Update(basket);
-                await dbContext.SaveChangesAsync();
+                var response = await client.UpdateItemAsync(request);
 
-                return true;
+                return response;
             }
             catch (Exception ex)
             { 
@@ -102,9 +142,23 @@ namespace src.HelloWorld
             }
         }
 
-        public async Task<bool> RemoveItemFromBasket(Basket basket)
+        public async Task<DeleteItemResponse> RemoveItemFromBasket(Basket basket)
         {
-            var dbContext = db.ConfigureDB();
+             var client = _dbContextHandler.ConfigureDynamoDB();
+            var request = new DeleteItemRequest
+            {
+                TableName = dynamoDBTable,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {
+                        basket.itemName,
+                        new AttributeValue
+                        {
+                            S = basket.itemQuantity
+                        }
+                    }
+                }
+            };
             
             if (basket is null)
             {
@@ -113,9 +167,8 @@ namespace src.HelloWorld
             {
                  try
             {
-                shoppingCat.Remove(basket.itemName);
-                await dbContext.SaveChangesAsync();
-                return true;
+                var response = await client.DeleteItemAsync(request);
+                return response;
             }
             catch (Exception ex)
             { 
