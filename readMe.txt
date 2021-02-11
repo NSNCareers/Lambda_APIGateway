@@ -10,7 +10,9 @@ sam local start-api -t template.yaml
 (4) Start server locally with json file creating the event 
  sam local invoke AddItemFunction --event addItem.json
 
-./src/HelloWorld/  {proxy+}
+./src/HelloWorld/  
+/{proxy+}
+ "body": "{\"itemName\":\"bar\",\"itemQuantity\":\"22\"}",
 
 
 Adding EF Core 
